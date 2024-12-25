@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container">
+        <h1>Dashboard</h1>
+        {% with total_images_created=request.user.images_created.count %}
+            <p>Welcome to your dashboard. You have bookmarked {{ total_images_created }} images.</p>
+        {% endwith %}
+
+        <p>Drag the following button to your bookmarks toolbar to bookmark images on this site:</p>
+
+        <a href="javascript:void(0);" onclick="javascript:window.location.href='{% url 'images:image_create' %}';">
+            Bookmark
+        </a>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="user-info">
+                    <h2>Welcome, {{ user.username }}</h2>
+                    {% if user.profile.picture %}
+    <img src="{{ user.profile.picture.url }}" alt="User Profile Picture">
+    {% else %}
+    <p>No profile picture uploaded.</p>
+     {% endif %}
+                    <p><strong>Email:</strong> {{ user.email }}</p>
+                    <p><strong>Joined:</strong> {{ user.date_joined }}</p>
+                    <p> you can also edit your profile or change password <br><br> <a href="{% url 'account:edit' %}">Edit your Profile</a></p>
+                    <a href="{% url 'account:password_change' %}">Change Password</a>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <h2>Recent Activity</h2>
+                <ul>
+                    {% for activity in recent_activities %}
+                        <li>{{ activity }}</li>
+                    {% empty %}
+                        <li>No recent activities found.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}

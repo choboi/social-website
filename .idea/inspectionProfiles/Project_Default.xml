@@ -1,0 +1,55 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myValues">
+        <value>
+          <list size="11">
+            <item index="0" class="java.lang.String" itemvalue="url_for(‘answer_question’," />
+            <item index="1" class="java.lang.String" itemvalue="question_id" />
+            <item index="2" class="java.lang.String" itemvalue="answer”" />
+            <item index="3" class="java.lang.String" itemvalue="url_for(‘home’)" />
+            <item index="4" class="java.lang.String" itemvalue="}}”" />
+            <item index="5" class="java.lang.String" itemvalue="initial-scale" />
+            <item index="6" class="java.lang.String" itemvalue="url_for(‘view_question’," />
+            <item index="7" class="java.lang.String" itemvalue="url_for(‘ask_question’)" />
+            <item index="8" class="java.lang.String" itemvalue="background-color" />
+            <item index="9" class="java.lang.String" itemvalue="css" />
+            <item index="10" class="java.lang.String" itemvalue="blog:post_share" />
+          </list>
+        </value>
+      </option>
+      <option name="myCustomValuesEnabled" value="true" />
+    </inspection_tool>
+    <inspection_tool class="HtmlUnknownTag" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myValues">
+        <value>
+          <list size="7">
+            <item index="0" class="java.lang.String" itemvalue="nobr" />
+            <item index="1" class="java.lang.String" itemvalue="noembed" />
+            <item index="2" class="java.lang.String" itemvalue="comment" />
+            <item index="3" class="java.lang.String" itemvalue="noscript" />
+            <item index="4" class="java.lang.String" itemvalue="embed" />
+            <item index="5" class="java.lang.String" itemvalue="script" />
+            <item index="6" class="java.lang.String" itemvalue="marquee" />
+          </list>
+        </value>
+      </option>
+      <option name="myCustomValuesEnabled" value="true" />
+    </inspection_tool>
+    <inspection_tool class="PyShadowingBuiltinsInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="ignoredNames">
+        <list>
+          <option value="id" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <list>
+          <option value="myblogsite.myblogsite.urls.*" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>

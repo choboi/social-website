@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <link href="{% static 'css/base.css' %}" rel="stylesheet">
+</head>
+<body>
+<header style="background: #333; color: #ffff; padding: 1rem 0; display: flex; justify-content: center; list-style: none; margin-top: 1rem">
+    <div id="header" class="container" style="width: 90%; max-width: 1100px; margin: auto;">
+        <span class="logo">Bookmarks</span>
+        {% if request.user.is_authenticated %}
+<ul class="menu" style="display: flex; justify-content: center; list-style: none; margin-top: 1rem">
+    <li style="margin: 0 13px; color: #fff; text-decoration: none;" {% if section == "dashboard" %}class="selected"{% endif %}>
+        <a  href="{% url 'account:dashboard' %}" style=" color: blue">My dashboard</a>
+    </li>
+    <li style="margin: 0 13px; color: #fff; text-decoration: none;" {% if section == "images" %}class="selected"{% endif %}>
+        <a style=" color: blue" href="#">Images</a>
+    </li>
+    <li style="margin: 0 13px; color: #fff; text-decoration: none;" {% if section == "people" %}class="selected"{% endif %}>
+        <a style=" color: blue" href="#">People</a>
+    </li>
+</ul>
+{% endif %}
+        <span class="user" >
+            {% if request.user.is_authenticated %}
+            Hello, {{ request.user.first_name|default:request.user.username }}
+            <form style="float: right; margin: 0 0px; color: #fff; text-decoration: none;" action="{% url 'account:logout' %}" method="post" class="logout-form">
+                {% csrf_token %}
+                <button type="submit">Logout</button>
+            </form>
+            {% else %}
+            <a href="{% url 'account:login' %}">Log-in</a>
+            {% endif %}
+        </span>
+        </header>
+    </div>
+{% if messages %}
+<ul class="messages">
+{% for message in messages %}
+<li class="{{ message.tags }}">
+{{ message|safe }}
+<a href="#" class="close">x</a>
+</li>
+{% endfor %}
+</ul>
+{% endif %}
+    <div id="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+</html>
