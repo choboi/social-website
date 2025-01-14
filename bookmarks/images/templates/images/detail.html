@@ -4,29 +4,87 @@
 {% debug %}
 <h1>{{ image.title }}</h1>
 {% load thumbnail %}
-<img src="{{ image.url }}" alt="Image description">
-<img src="{% thumbnail image.image 300x0 %}" class="image-detail">
+<a href="{{ account.image.url }}">
+    {% debug %}
+    <h1>{{ image.title }}</h1>
+    {% load thumbnail %}
+    <img src="{% if image.image %}{% thumbnail image.image '300x300' %}{% else %}{{ image.get_default_image_url }}{% endif %}" class="image-detail">
 </a>
-{% with total_likes=image.users_like.count %}
+{% with total_likes=image.users_like.count users_like=image.users_like.all %}
 <div class="image-info">
-<div>
-<span class="count">
-{{ total_likes }} like{{ total_likes|pluralize }}
-</span>
+    <div>
+    <span class="count">
+        <span class="total">{{ total_likes }}</span>
+        like{{ total_likes|pluralize }}
+    </span>
+    <a href="#" data-id="{{ image.id }}" data-action="{% if request.user not in users_like %}like{% else %}unlike{% endif %}" class="like button">
+        {% if request.user not in users_like %}
+            Like
+        {% else %}
+            Unlike
+        {% endif %}
+    </a>
 </div>
-    {{ image.description|linebreaks }}
+{{ image.description|linebreaks }}
 </div>
 <div class="image-likes">
-{% for user in image.users_like.all %}
+{% for user in users_like %}
 <div>
 {% if user.profile.photo %}
 <img src="{{ user.profile.photo.url }}">
 {% endif %}
 <p>{{ user.first_name }}</p>
 </div>
-{% empty %}
-Nobody likes this image yet.
-{% endfor %}
+    {% empty %}
+        <p>Nobody likes this image yet.</p>
+    {% endfor %}
 </div>
 {% endwith %}
+{% endblock %}
+
+{% block domready %}
+<script>
+const url = '{% url "images:like" %}';
+var options = {
+    method: 'POST',
+    headers: { 'X-CSRFToken': csrftoken },
+    mode: 'same-origin'
+};
+document.addEventListener('DOMContentLoaded', function() {
+    const likeButton = document.querySelector('a.like');
+
+    if (likeButton) {
+        likeButton.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            var formData = new FormData();
+            formData.append('id', likeButton.dataset.id);
+            formData.append('action', likeButton.dataset.action);
+            options.body = formData;
+
+            fetch(url, options)
+                .then(response => response.json())
+                .then(data => {
+                    if (data['status'] === 'ok') {
+                        const previousAction = likeButton.dataset.action;
+
+                        // Toggle button text and data-action
+                        const action = previousAction === 'like' ? 'unlike' : 'like';
+                        likeButton.dataset.action = action;
+                        likeButton.textContent = action;
+
+                        // Update like count
+                        const likeCountElement = document.querySelector('span.count .total');
+                        if (likeCountElement) {
+                            let totalLikes = parseInt(likeCountElement.textContent, 10);
+                            totalLikes = previousAction === 'like' ? totalLikes - 1 : totalLikes + 1;
+                            likeCountElement.textContent = totalLikes;
+                        }
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    }
+});
+</script>
 {% endblock %}

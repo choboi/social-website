@@ -2,6 +2,8 @@ from django.conf import settings
 from django.db import models
 from django.utils.text import slugify
 from django.urls import reverse
+from django.core.exceptions import ValidationError
+from easy_thumbnails.files import get_thumbnailer
 
 
 class Image(models.Model):
@@ -37,5 +39,28 @@ class Image(models.Model):
     def get_absolute_url(self):
         return reverse('images:detail', args=[self.id, self.slug])
 
+    def clean(self):
+        super().clean()
+        if not self.url and not self.image:
+            raise ValidationError('You must provide either a URL or upload an image.')
+        if self.url and self.image:
+            raise ValidationError('Provide either a URL or upload an image, not both.')
+
+    def get_thumbnail(self):
+        if self.image:
+            thumbnailer = get_thumbnailer(self.image)
+            return thumbnailer.get_thumbnail({'size': (300, 0)}).url
+        return None
+
+    def delete(self, *args, **kwargs):
+        if self.image:
+            self.image.delete(save=False)
+        super().delete(*args, **kwargs)
+
+    indexes = [
+        models.Index(fields=['-created']),
+        models.Index(fields=['user']),
+    ]
+
     def __str__(self):
-        return self.title
+        return f"Image(title={self.title}, user={self.user}, created={self.created})"

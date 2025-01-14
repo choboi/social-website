@@ -1,10 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% for image in images %}
+<div class="image">
+  <a href="{{ image.get_absolute_url }}">
+    <img src="{{ image.get_absolute_url }}" width="300" height="300" alt="{{ image.title }}">
+      <img src="{{ thumbnail.url }}" />
+    {% endfor %} </a>
+  <div class="info">
+    <a href="{{ image.get_absolute_url }}" class="title">
+      {{ image.title }}
+    </a>
+  </div>
+</div>
+{% for item in my_list %}
+    {% endfor %}

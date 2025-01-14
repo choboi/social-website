@@ -3,29 +3,104 @@
 <html>
 <head>
     <title>{% block title %}{% endblock %}</title>
-    <link href="{% static 'css/base.css' %}" rel="stylesheet">
+    <style>
+        /* Header Styles */
+        .header {
+            background: #333;
+            color: #fff;
+            padding: 1rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: nowrap;
+        }
+
+        .header .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
+            margin-left: 10px;
+        }
+
+        .menu-container {
+            display: flex;
+            flex: 1; /* Allows this section to grow and take available space */
+            justify-content: center; /* Center the menu horizontally */
+            align-items: center;
+        }
+
+        .menu {
+            display: flex;
+            gap: 15px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .menu li {
+            list-style: none;
+        }
+
+        .menu li a {
+            color: blue;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .menu .selected a {
+            color: #007bff;
+            font-weight: bold;
+        }
+
+        .user {
+            font-size: 1rem;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            margin-right: 10px;
+        }
+
+        .logout-form {
+            margin-left: 10px;
+        }
+
+        .logout-form button {
+            background-color: transparent;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .logout-form button:hover {
+            color: #007bff;
+        }
+    </style>
 </head>
 <body>
-<header style="background: #333; color: #ffff; padding: 1rem 0; display: flex; justify-content: center; list-style: none; margin-top: 1rem">
-    <div id="header" class="container" style="width: 90%; max-width: 1100px; margin: auto;">
+    <header class="header">
         <span class="logo">Bookmarks</span>
+
         {% if request.user.is_authenticated %}
-<ul class="menu" style="display: flex; justify-content: center; list-style: none; margin-top: 1rem">
-    <li style="margin: 0 13px; color: #fff; text-decoration: none;" {% if section == "dashboard" %}class="selected"{% endif %}>
-        <a  href="{% url 'account:dashboard' %}" style=" color: blue">My dashboard</a>
-    </li>
-    <li style="margin: 0 13px; color: #fff; text-decoration: none;" {% if section == "images" %}class="selected"{% endif %}>
-        <a style=" color: blue" href="#">Images</a>
-    </li>
-    <li style="margin: 0 13px; color: #fff; text-decoration: none;" {% if section == "people" %}class="selected"{% endif %}>
-        <a style=" color: blue" href="#">People</a>
-    </li>
-</ul>
-{% endif %}
-        <span class="user" >
+        <div class="menu-container">
+            <ul class="menu">
+                <li {% if section == "dashboard" %}class="selected"{% endif %}>
+                    <a href="{% url 'account:dashboard' %}">My dashboard</a>
+                </li>
+                <li {% if section == "images" %}class="selected"{% endif %}>
+                    <a href="{% url 'images:list' %}">Images</a>
+                </li>
+                <li {% if section == "people" %}class="selected"{% endif %}>
+                    <a href="{% url 'account:list' %}">People</a>
+                </li>
+            </ul>
+        </div>
+        {% endif %}
+
+        <span class="user">
             {% if request.user.is_authenticated %}
             Hello, {{ request.user.first_name|default:request.user.username }}
-            <form style="float: right; margin: 0 0px; color: #fff; text-decoration: none;" action="{% url 'account:logout' %}" method="post" class="logout-form">
+            <form action="{% url 'account:logout' %}" method="post" class="logout-form">
                 {% csrf_token %}
                 <button type="submit">Logout</button>
             </form>
@@ -33,21 +108,31 @@
             <a href="{% url 'account:login' %}">Log-in</a>
             {% endif %}
         </span>
-        </header>
-    </div>
-{% if messages %}
-<ul class="messages">
-{% for message in messages %}
-<li class="{{ message.tags }}">
-{{ message|safe }}
-<a href="#" class="close">x</a>
-</li>
-{% endfor %}
-</ul>
-{% endif %}
+    </header>
+
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li class="{{ message.tags }}">
+            {{ message|safe }}
+            <a href="#" class="close">x</a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
     <div id="content">
         {% block content %}
         {% endblock %}
     </div>
+
+    <script src="//cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+    <script>
+        const csrftoken = Cookies.get('csrftoken');
+        document.addEventListener('DOMContentLoaded', (event) => {
+            {% block domready %}
+            {% endblock %}
+        });
+    </script>
 </body>
 </html>

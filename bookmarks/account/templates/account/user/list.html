@@ -1,10 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% load thumbnail %}
+{% load static %}
+{% block title %}People{% endblock %}
+{% block content %}
+  <h1>People</h1>
+  <div id="people-list">
+    {% for user in users %}
+      <div class="people">
+        <a href="{{ people.get_absolute_url }}">
+<img src="{% thumbnail people:user.get_absolute_url 180x180 %}" alt="Profile Picture">
+        </a>
+        <div class="info">
+          <a href="{{ people.get_absolute_url }}" class="title">
+            {{ user.get_full_name }}
+          </a>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}
